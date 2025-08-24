@@ -30,41 +30,35 @@ export class GameRoot {
 
         this.initializeInput();
         this.initializeBucket();
-        // this.initializeFruits();
+        this.initializeFruits();
     }
 
     private initializeInput() {
-        const ctx: InputControlsCtx = {
+        this.inputPm = new InputControlsPm({
             onLeftMouseButtonDown: this.onLeftMouseButtonDown,
             onLeftMouseButtonUp: this.onLeftMouseButtonUp,
             onMouseMove: this.onMouseMove,
-        };
-
-        this.inputPm = new InputControlsPm(ctx);
+        });
     }
 
     private initializeBucket() {
-        const ctx: BucketRootCtx = {
+        this.bucketRoot = new BucketRoot({
             bucketPrefab: this.ctx.bucketPrefab,
             parent: this.ctx.parent,
             spawnPoint: this.ctx.spawnPoint,
             onLeftMouseButtonDown: this.onLeftMouseButtonDown,
             onLeftMouseButtonUp: this.onLeftMouseButtonUp,
             onMouseMove: this.onMouseMove,
-        };
-
-        this.bucketRoot = new BucketRoot(ctx);
+        });
     }
 
     private initializeFruits() {
-        const ctx: FruitsRootCtx = {
+        this.fruitsRoot = new FruitsRoot({
             fruitsSpawns: this.ctx.fruitsSpawns,
             fruitsPrefabs: this.ctx.fruitsPrefabs,
             spawnFrequencySec: this.ctx.spawnFrequencySec,
             parent: this.ctx.parent
-        };
-
-        this.fruitsRoot = new FruitsRoot(ctx);
+        });
     }
 
     destroy() {

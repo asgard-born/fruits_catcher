@@ -1,5 +1,6 @@
 import { Node, Prefab } from "cc";
-import { FruitsSpawnSystem, FruitsSpawnSystemCtx } from "./FruitsSpawnSystem";
+import { FruitsSpawnSystem } from "./FruitsSpawnSystem";
+import { FruitsBehaviourSystem } from "./FruitsBehaviourSystem";
 
 export type FruitsRootCtx = {
     fruitsSpawns: Node[];
@@ -10,25 +11,29 @@ export type FruitsRootCtx = {
 
 export class FruitsRoot {
     private ctx: FruitsRootCtx;
+    private fruits: Node[] = [];
     private spawnSystem: FruitsSpawnSystem;
+    private behaviourSystem: FruitsBehaviourSystem;
 
     constructor(ctx: FruitsRootCtx) {
         this.ctx = ctx;
-        this.initializeSpawner();
-    }
 
-    private initializeSpawner() {
-        const spawnCtx: FruitsSpawnSystemCtx = {
-            spawnFrequencySec: this.ctx.spawnFrequencySec,
-            fruitsSpawns: this.ctx.fruitsSpawns,
-            fruitsPrefabs: this.ctx.fruitsPrefabs,
-            parent: this.ctx.parent
-        };
+        this.spawnSystem = new FruitsSpawnSystem({
+            spawnFrequencySec: ctx.spawnFrequencySec,
+            fruitsSpawns: ctx.fruitsSpawns,
+            fruitsPrefabs: ctx.fruitsPrefabs,
+            fruits: this.fruits,
+        });
 
-        this.spawnSystem = new FruitsSpawnSystem(spawnCtx);
+        this.behaviourSystem = new FruitsBehaviourSystem({
+            fruits: this.fruits,
+            speed: 100,
+            tickIntervalMs: 16
+        });
     }
 
     destroy() {
         this.spawnSystem?.destroy();
+        this.behaviourSystem?.destroy();
     }
 }
