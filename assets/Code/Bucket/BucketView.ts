@@ -1,12 +1,22 @@
-import { _decorator, Component, Collider2D, Contact2DType, IPhysics2DContact } from 'cc';
+import { _decorator, Component, Collider2D, Contact2DType, IPhysics2DContact, Node } from 'cc';
 import { FruitView } from '../Fruits/FruitView';
-import { DangerFruitView } from '../Fruits/DangerFruitView';
+import { FruitType } from "../Fruits/FruitType";
+import { Subject } from "../Utils/Subject";
 
 const { ccclass } = _decorator;
 
+export type BucketViewCtx = {
+    onCollectFruit: Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
+};
+
 @ccclass('BucketView')
 export class BucketView extends Component {
-    private collider: Collider2D;
+    private ctx: BucketViewCtx;
+    private collider: Collider2D | null = null;
+
+    public Initialize(ctx: BucketViewCtx) {
+        this.ctx = ctx;
+    }
 
     protected onLoad(): void {
         this.collider = this.getComponent(Collider2D);
@@ -16,28 +26,16 @@ export class BucketView extends Component {
         }
     }
 
-    private isDangerFruit(fruit: FruitView): fruit is DangerFruitView {
-        return fruit instanceof DangerFruitView;
-    }
-
-    private onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null): void {
-        const fruit = otherCollider.node.getComponent(FruitView);
-        let isDangerous = false;
-
-        console.log("FRUIT CATCH!!!");
-
-        if (this.isDangerFruit(fruit)) {
-            isDangerous = true;
-        }
+    private onBeginContact(self: Collider2D, other: Collider2D, contact: IPhysics2DContact | null) {
+        const fruit = other.node.getComponent(FruitView);
 
         if (fruit) {
-
-            this.collectFruit(fruit);
+            this.ctx.onCollectFruit.next({
+                isDamage: false,
+                fruitType: fruit.fruitType,
+                node: other.node,
+            });
         }
-    }
-
-    private collectFruit(fruit: FruitView): void {
-        fruit.node.destroy();
     }
 
     protected onDestroy(): void {

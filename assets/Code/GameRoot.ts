@@ -3,6 +3,7 @@ import { InputControlsPm, InputControlsCtx } from "./InputControls/InputControls
 import { BucketRoot, BucketRootCtx } from "./Bucket/BucketRoot";
 import { Subject } from "./Utils/Subject";
 import { FruitsRoot, FruitsRootCtx } from "./Fruits/FruitsRoot";
+import { FruitType } from "./Fruits/FruitType";
 
 export type GameCtx = {
     bucketPrefab: Prefab;
@@ -23,7 +24,7 @@ export class GameRoot {
     private onLeftMouseButtonDown = new Subject<{ x: number; y: number }>();
     private onLeftMouseButtonUp = new Subject<{ x: number; y: number }>();
     private onMouseMove = new Subject<{ x: number; y: number }>();
-    private onCollectFruit = new Subject<{ x: number; y: number }>();
+    private onCollectFruit= new Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
 
     constructor(ctx: GameCtx) {
         this.ctx = ctx;
@@ -49,6 +50,7 @@ export class GameRoot {
             onLeftMouseButtonDown: this.onLeftMouseButtonDown,
             onLeftMouseButtonUp: this.onLeftMouseButtonUp,
             onMouseMove: this.onMouseMove,
+            onCollectFruit: this.onCollectFruit
         });
     }
 
@@ -57,7 +59,8 @@ export class GameRoot {
             fruitsSpawns: this.ctx.fruitsSpawns,
             fruitsPrefabs: this.ctx.fruitsPrefabs,
             spawnFrequencySec: this.ctx.spawnFrequencySec,
-            parent: this.ctx.parent
+            parent: this.ctx.parent,
+            onCollectFruit: this.onCollectFruit
         });
     }
 

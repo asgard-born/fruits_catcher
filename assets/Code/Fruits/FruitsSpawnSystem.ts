@@ -1,16 +1,16 @@
-import { Node, Prefab, instantiate } from "cc";
+import { Node, Vec3 } from "cc";
+import { FruitsPool } from "./FruitsPool";
 
 export type FruitsSpawnSystemCtx = {
-    spawnFrequencySec: number;
     fruitsSpawns: Node[];
-    fruitsPrefabs: Prefab[];
+    spawnFrequencySec: number;
+    pool: FruitsPool;
     fruits: Node[];
 };
 
 export class FruitsSpawnSystem {
     private ctx: FruitsSpawnSystemCtx;
     private intervalId: number | null = null;
-    private lastPrefabIndex: number = -1;
     private lastSpawnIndex: number = -1;
 
     constructor(ctx: FruitsSpawnSystemCtx) {
@@ -24,36 +24,29 @@ export class FruitsSpawnSystem {
         }, this.ctx.spawnFrequencySec * 1000);
     }
 
-    private spawnFruit() {
-        if (this.ctx.fruitsPrefabs.length === 0 || this.ctx.fruitsSpawns.length === 0) return;
+    spawnFruit() {
+        // достаём фрукт из пула
+        const fruit = this.ctx.pool.getFruit();
 
-        let prefabIndex: number;
-        do {
-            prefabIndex = Math.floor(Math.random() * this.ctx.fruitsPrefabs.length);
-        } while (prefabIndex === this.lastPrefabIndex);
+        // выбираем случайную точку спавна
+        const spawn = this.ctx.fruitsSpawns[
+            Math.floor(Math.random() * this.ctx.fruitsSpawns.length)
+        ];
 
-        this.lastPrefabIndex = prefabIndex;
+        // ставим фрукт в позицию точки спавна
+        fruit.setPosition(new Vec3(
+            spawn.position.x,
+            spawn.position.y,
+            spawn.position.z
+        ));
 
-        let spawnIndex: number;
-        do {
-            spawnIndex = Math.floor(Math.random() * this.ctx.fruitsSpawns.length);
-        } while (spawnIndex === this.lastSpawnIndex);
-
-        this.lastSpawnIndex = spawnIndex;
-
-        const prefab = this.ctx.fruitsPrefabs[prefabIndex];
-        const spawnPoint = this.ctx.fruitsSpawns[spawnIndex];
-
-        const fruitNode = instantiate(prefab);
-        fruitNode.setParent(spawnPoint.parent ?? spawnPoint.scene);
-        fruitNode.setPosition(spawnPoint.position);
-
-        this.ctx.fruits.push(fruitNode);
+        // добавляем в массив активных
+        this.ctx.fruits.push(fruit);
     }
 
     destroy() {
         if (this.intervalId !== null) {
-            window.clearInterval(this.intervalId);
+            clearInterval(this.intervalId);
             this.intervalId = null;
         }
     }

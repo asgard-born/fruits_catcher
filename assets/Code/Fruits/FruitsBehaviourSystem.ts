@@ -1,9 +1,15 @@
 import { Node, Vec3 } from "cc";
+import { FruitsPool } from "./FruitsPool";
+import { FruitType } from "./FruitType";
+import { Subject } from "../Utils/Subject";
+import { FruitView } from "./FruitView";
 
 export type FruitsBehaviourSystemCtx = {
-    fruits: Node[];   
-    speed: number;    
+    fruits: Node[];
+    pool: FruitsPool;
+    speed: number;
     tickIntervalMs: number;
+    onCollectFruit: Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
 };
 
 export class FruitsBehaviourSystem {
@@ -13,28 +19,36 @@ export class FruitsBehaviourSystem {
     constructor(ctx: FruitsBehaviourSystemCtx) {
         this.ctx = ctx;
         this.startBehaveLoop();
+
+        this.ctx.onCollectFruit.subscribe((fruitInfo) => {
+            this.removeFruit(fruitInfo.node);
+        });
     }
 
     private startBehaveLoop() {
-        const interval = this.ctx.tickIntervalMs;
-        
         this.intervalId = window.setInterval(() => {
-            this.behave(interval / 1000);
-        }, interval);
+            this.updateFruits(this.ctx.tickIntervalMs / 1000);
+        }, this.ctx.tickIntervalMs);
     }
 
-    private behave(deltaTime: number) {
+    private updateFruits(deltaTime: number) {
         this.ctx.fruits.forEach(node => {
-            if (!node.isValid) return;
-
             const pos = node.position;
             node.setPosition(new Vec3(pos.x, pos.y - this.ctx.speed * deltaTime, pos.z));
         });
     }
 
+    private removeFruit(fruit: Node) {
+        const idx = this.ctx.fruits.indexOf(fruit);
+        if (idx !== -1) {
+            this.ctx.fruits.splice(idx, 1);
+            this.ctx.pool.releaseFruit(fruit);
+        }
+    }
+
     destroy() {
         if (this.intervalId !== null) {
-            window.clearInterval(this.intervalId);
+            clearInterval(this.intervalId);
             this.intervalId = null;
         }
     }

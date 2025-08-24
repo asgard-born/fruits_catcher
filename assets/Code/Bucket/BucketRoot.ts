@@ -1,6 +1,8 @@
 import { Node, Prefab, instantiate } from "cc";
 import { BucketPm, BucketPmCtx } from "./BucketPm";
 import { Subject } from "../Utils/Subject";
+import { BucketView } from "./BucketView";
+import { FruitType } from "../Fruits/FruitType";
 
 export type BucketRootCtx = {
     bucketPrefab: Prefab;
@@ -9,6 +11,7 @@ export type BucketRootCtx = {
     onLeftMouseButtonDown: Subject<{ x: number; y: number }>;
     onLeftMouseButtonUp: Subject<{ x: number; y: number }>;
     onMouseMove: Subject<{ x: number; y: number }>;
+    onCollectFruit: Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
 };
 
 export class BucketRoot {
@@ -22,6 +25,12 @@ export class BucketRoot {
         this.bucketNode = instantiate(ctx.bucketPrefab);
         this.bucketNode.setParent(ctx.parent);
         this.bucketNode.setPosition(ctx.spawnPoint.position);
+
+        const view = this.bucketNode.getComponent(BucketView);
+
+        view.Initialize({
+            onCollectFruit: ctx.onCollectFruit,
+        });
 
         const bucketPmCtx: BucketPmCtx = {
             bucketNode: this.bucketNode,
