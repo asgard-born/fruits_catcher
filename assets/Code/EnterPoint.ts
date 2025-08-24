@@ -11,6 +11,9 @@ export class EnterPoint extends Component {
     @property(Node)
     spawnPoint: Node = null;
 
+    @property(Node)
+    parentNode: Node = null;
+
     @property(Number)
     spawnFrequencySec: number = 0.6;
     
@@ -33,7 +36,7 @@ export class EnterPoint extends Component {
 
         const gameCtx: GameCtx = {
             bucketPrefab: this.bucketPrefab,
-            parent: this.node,
+            parent: this.parentNode,
             spawnPoint: this.spawnPoint,
             fruitsSpawns: this.fruitsSpawns,
             fruitsPrefabs: this.fruitsPrefabs,
