@@ -24,7 +24,7 @@ export class GameRoot {
     private onLeftMouseButtonDown = new Subject<{ x: number; y: number }>();
     private onLeftMouseButtonUp = new Subject<{ x: number; y: number }>();
     private onMouseMove = new Subject<{ x: number; y: number }>();
-    private onCollectFruit= new Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
+    private onCollectFruit = new Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
 
     constructor(ctx: GameCtx) {
         this.ctx = ctx;

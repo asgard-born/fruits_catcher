@@ -19,7 +19,7 @@ export class FruitsRoot {
     private behaviourSystem: FruitsBehaviourSystem;
     private pool: FruitsPool;
 
-    private readonly EACH_FRUIT_COUNT: number = 20;
+    private readonly EACH_FRUIT_COUNT: number = 3;
 
     constructor(ctx: FruitsRootCtx) {
         const poolCtx: FruitsPoolCtx = {

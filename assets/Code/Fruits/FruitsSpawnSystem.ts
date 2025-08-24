@@ -24,16 +24,22 @@ export class FruitsSpawnSystem {
         }, this.ctx.spawnFrequencySec * 1000);
     }
 
+    private getNextSpawn(): Node {
+        let index: number;
+        const count = this.ctx.fruitsSpawns.length;
+
+        do {
+            index = Math.floor(Math.random() * count);
+        } while (count > 1 && index === this.lastSpawnIndex);
+
+        this.lastSpawnIndex = index;
+        return this.ctx.fruitsSpawns[index];
+    }
+
     spawnFruit() {
-        // достаём фрукт из пула
         const fruit = this.ctx.pool.getFruit();
+        const spawn = this.getNextSpawn();
 
-        // выбираем случайную точку спавна
-        const spawn = this.ctx.fruitsSpawns[
-            Math.floor(Math.random() * this.ctx.fruitsSpawns.length)
-        ];
-
-        // ставим фрукт в позицию точки спавна
         fruit.setPosition(new Vec3(
             spawn.position.x,
             spawn.position.y,
