@@ -12,7 +12,6 @@ export class BucketView extends Component {
         this.collider = this.getComponent(Collider2D);
 
         if (this.collider) {
-            this.collider.sensor = true;
             this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         }
     }
@@ -25,22 +24,20 @@ export class BucketView extends Component {
         const fruit = otherCollider.node.getComponent(FruitView);
         let isDangerous = false;
 
+        console.log("FRUIT CATCH!!!");
+
         if (this.isDangerFruit(fruit)) {
             isDangerous = true;
         }
 
         if (fruit) {
-            console.log('Fruit detected:', otherCollider.node.name);
-            this.handleFruitContact(fruit);
+
+            this.collectFruit(fruit);
         }
     }
 
-    private handleFruitContact(fruitView: FruitView): void {
-        this.collectFruit(fruitView);
-    }
-
-    private collectFruit(fruitView: FruitView): void {
-
+    private collectFruit(fruit: FruitView): void {
+        fruit.node.destroy();
     }
 
     protected onDestroy(): void {

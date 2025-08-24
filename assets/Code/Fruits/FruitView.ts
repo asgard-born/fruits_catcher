@@ -9,6 +9,6 @@ export class FruitView extends Component {
     fruitType: FruitType = FruitType.None;
 
     private onAddToBucket() {
-        // TODO: обработка добавления во время игры
+        ;
     }
 }

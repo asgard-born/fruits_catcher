@@ -26,6 +26,7 @@ export class BucketPm {
             ctx.onMouseMove.subscribe(({ x, y }) => this.onMouseMove(x, y)),
         );
     }
+
     private onMouseDown(x: number, y: number) {
         const ui = this.bucketNode.getComponent(UITransform);
         if (!ui) return;
@@ -39,6 +40,7 @@ export class BucketPm {
             this.offsetX = this.bucketNode.worldPosition.x - worldClick.x;
         }
     }
+    
     private onMouseUp() {
         this.dragging = false;
     }

@@ -17,6 +17,7 @@ export class FruitsBehaviourSystem {
 
     private startBehaveLoop() {
         const interval = this.ctx.tickIntervalMs;
+        
         this.intervalId = window.setInterval(() => {
             this.behave(interval / 1000);
         }, interval);
