@@ -35,6 +35,7 @@ export class GameLifecycleSystem {
   }
 
   private restartGame() {
+    director.resume();
     this.ctx.lives.value = this.ctx.initialLives;
     this.ctx.scores.value = 0;
     this.ctx.isOnPause.value = false;
