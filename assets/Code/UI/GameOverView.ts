@@ -1,10 +1,11 @@
 import { _decorator, Component, Button, Node } from "cc";
-import { GameRoot } from "../GameRoot";
+import { Subject } from "../Utils/Subject";
 
 const { ccclass, property } = _decorator;
 
 export type GameOverViewCtx = {
   root: Node;
+  onRestart: Subject<void>;
 };
 
 @ccclass("GameOverView")
@@ -13,7 +14,6 @@ export class GameOverView extends Component {
   restartButton: Button = null;
 
   private ctx: GameOverViewCtx;
-  private onRestart: () => void;
 
   public initialize(ctx: GameOverViewCtx) {
     this.ctx = ctx;
@@ -26,16 +26,13 @@ export class GameOverView extends Component {
     this.hide();
   }
 
-  public show(onRestart: () => void) {
-    this.onRestart = onRestart;
+  public show() {
     this.node.active = true;
   }
 
   private handleRestart() {
+    this.ctx.onRestart.next();
     this.hide();
-    if (this.onRestart) {
-      this.onRestart();
-    }
   }
 
   public hide() {

@@ -16,12 +16,11 @@ export type FruitsRootCtx = {
     onDamage: Subject<{ value: number }>;
     onCollectScores: Subject<{ value: number }>;
     isOnPause: ReactiveProperty<boolean>;
+    speed: number;
 };
 
 export class FruitsRoot {
     private fruits: FruitView[] = [];
-    private spawnSystem: FruitsSpawnSystem;
-    private behaviourSystem: FruitsFallingSystem;
     private pool: FruitsPool;
 
     private readonly EACH_FRUIT_COUNT: number = 3;
@@ -46,7 +45,7 @@ export class FruitsRoot {
         new FruitsFallingSystem({
             fruits: this.fruits,
             pool: this.pool,
-            speed: 100,
+            speed: ctx.speed,
             tickIntervalMs: 16,
             onCollectFruit: ctx.onCollectFruit,
             isOnPause: ctx.isOnPause,

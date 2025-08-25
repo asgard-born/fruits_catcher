@@ -1,17 +1,17 @@
 import { Node } from "cc";
 import { _decorator, Component, RichText } from "cc";
-import { GameLifecycleSystem } from "../GameLifecycleSystem";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
-import { GameOverView, GameOverViewCtx } from "./GameOverView";
-import { GameRoot } from "../GameRoot";
+import { GameOverView } from "./GameOverView";
+import { Subject } from "../Utils/Subject";
 
 const { ccclass, property } = _decorator;
 
 export type CoreWindowCtx = {
-  lifecycle: GameLifecycleSystem;
   scores: ReactiveProperty<number>;
   lives: ReactiveProperty<number>;
   root: Node;
+  onRestart: Subject<void>;
+  onGameOver: Subject<void>;
 };
 
 @ccclass("CoreWindow")
@@ -30,14 +30,16 @@ export class CoreWindow extends Component {
   public initialize(ctx: CoreWindowCtx) {
     this.ctx = ctx;
 
-    // Подписка на очки
     this.ctx.scores.subscribe((val) => {
       if (this.scoreText) {
         this.scoreText.string = `${val}`;
       }
     });
 
-    // Подписка на жизни
+    this.ctx.onGameOver.subscribe(() => {
+      this.showGameOver();
+    });
+
     this.ctx.lives.subscribe((val) => {
       if (this.livesText) {
         this.livesText.string = `${val}`;
@@ -45,20 +47,16 @@ export class CoreWindow extends Component {
     });
 
     if (this.gameOverView) {
-      const govCtx: GameOverViewCtx = { root: this.ctx.root };
-      this.gameOverView.initialize(govCtx);
+      this.gameOverView.initialize({
+        root: this.ctx.root,
+        onRestart: this.ctx.onRestart
+      });
     }
-
-    this.ctx.lifecycle.onGameOver.subscribe(() => {
-      this.showGameOver();
-    });
   }
 
   private showGameOver() {
     if (this.gameOverView) {
-      this.gameOverView.show(() => {
-        this.ctx.lifecycle.restartGame(3);
-      });
+      this.gameOverView.show();
     }
   }
 }

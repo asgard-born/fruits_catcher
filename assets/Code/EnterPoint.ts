@@ -24,6 +24,9 @@ export class EnterPoint extends Component {
     spawnFrequencySec: number = 0.6;
 
     @property(Number)
+    fallingSpeed: number = 120;
+
+    @property(Number)
     lives: number = 3;
 
     @property([Node])
@@ -48,8 +51,9 @@ export class EnterPoint extends Component {
             fruitsPrefabs: this.fruitsPrefabs,
             uiRoot: this.uiRoot,
             spawnFrequencySec: this.spawnFrequencySec,
-            lives: this.lives,
-            coreWindow: this.coreWindow
+            initialLives: this.lives,
+            coreWindow: this.coreWindow,
+            speed: this.fallingSpeed
         };
 
         this.gameRoot = new GameRoot(gameCtx);

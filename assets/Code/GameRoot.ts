@@ -4,7 +4,6 @@ import { BucketRoot } from "./Bucket/BucketRoot";
 import { Subject } from "./Utils/Subject";
 import { ReactiveProperty } from "./Utils/ReactiveProperty";
 import { FruitsRoot } from "./Fruits/FruitsRoot";
-import { FruitType } from "./Fruits/FruitType";
 import { GameLifecycleSystem } from "./GameLifecycleSystem";
 import { UIRoot } from "./UI/UIRoot";
 import { FruitView } from "./Fruits/FruitViews/FruitView";
@@ -17,8 +16,9 @@ export type GameCtx = {
     fruitsPrefabs: Prefab[];
     uiRoot: Node,
     spawnFrequencySec: number;
-    lives: number;
+    initialLives: number;
     coreWindow: Prefab;
+    speed: number;
 };
 
 export class GameRoot {
@@ -39,12 +39,13 @@ export class GameRoot {
     private onCollectFruit = new Subject<{ fruit: FruitView }>();
     private onDamage = new Subject<{ value: number }>();
     private onCollectScores = new Subject<{ value: number }>();
-
+    private onRestart = new Subject<void>();
+    private onGameOver = new Subject<void>();
 
     constructor(ctx: GameCtx) {
         this.ctx = ctx;
 
-        this.lives.value = ctx.lives;
+        this.lives.value = ctx.initialLives;
 
         this.initializeGameSystem();
         this.initializeInput();
@@ -59,6 +60,9 @@ export class GameRoot {
             lives: this.lives,
             scores: this.scores,
             isOnPause: this.isOnPause,
+            onRestart: this.onRestart,
+            initialLives: this.ctx.initialLives,
+            onGameOver: this.onGameOver
         });
     }
 
@@ -92,6 +96,7 @@ export class GameRoot {
             onDamage: this.onDamage,
             onCollectScores: this.onCollectScores,
             isOnPause: this.isOnPause,
+            speed: this.ctx.speed,
         });
     }
 
@@ -112,7 +117,9 @@ export class GameRoot {
             lifecycle: this.lifecycle,
             scores: this.scores,
             lives: this.lives,
-            root: this.ctx.parent
+            root: this.ctx.parent,
+            onRestart: this.onRestart,
+            onGameOver: this.onGameOver
         });
     }
 

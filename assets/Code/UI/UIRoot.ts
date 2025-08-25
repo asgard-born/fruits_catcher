@@ -2,6 +2,7 @@ import { Node, Prefab, instantiate } from "cc";
 import { CoreWindow, CoreWindowCtx } from "./CoreWindow";
 import { GameLifecycleSystem } from "../GameLifecycleSystem";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
+import { Subject } from "../Utils/Subject";
 
 export type UIRootCtx = {
   parent: Node;
@@ -10,6 +11,8 @@ export type UIRootCtx = {
   lives: ReactiveProperty<number>;
   scores: ReactiveProperty<number>;
   root: Node;
+  onRestart: Subject<void>;
+  onGameOver: Subject<void>;
 };
 
 export class UIRoot {
@@ -26,15 +29,14 @@ export class UIRoot {
     coreWindowNode.parent = this.ctx.parent;
 
     this.coreWindow = coreWindowNode.getComponent(CoreWindow)!;
-
-    const cwCtx: CoreWindowCtx = {
-      lifecycle: this.ctx.lifecycle,
+    
+    this.coreWindow.initialize({
       scores: this.ctx.scores,
       lives: this.ctx.lives,
       root: this.ctx.root,
-    };
-
-    this.coreWindow.initialize(cwCtx);
+      onRestart: this.ctx.onRestart,
+      onGameOver: this.ctx.onGameOver
+    });
   }
 
   public destroy() {
