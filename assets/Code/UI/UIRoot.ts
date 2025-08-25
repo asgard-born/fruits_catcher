@@ -1,34 +1,43 @@
-import { Node, Prefab, instantiate, _decorator } from "cc";
-import { CoreWindow } from "./CoreWindow";
+import { Node, Prefab, instantiate } from "cc";
+import { CoreWindow, CoreWindowCtx } from "./CoreWindow";
 import { GameLifecycle } from "../GameLifecycle";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
 
 export type UIRootCtx = {
-    parent: Node;
-    coreWindow: Prefab;
-    lifecycle: GameLifecycle;
-    lives: ReactiveProperty<number>;
-    scores: ReactiveProperty<number>;
+  parent: Node;
+  coreWindow: Prefab;
+  lifecycle: GameLifecycle;
+  lives: ReactiveProperty<number>;
+  scores: ReactiveProperty<number>;
+  root: Node;
 };
 
 export class UIRoot {
-    private ctx: UIRootCtx;
-    private coreWindow: CoreWindow;
+  private ctx: UIRootCtx;
+  private coreWindow: CoreWindow;
 
-    constructor(ctx: UIRootCtx) {
-        this.ctx = ctx;
-        this.initialize();
-    }
+  constructor(ctx: UIRootCtx) {
+    this.ctx = ctx;
+    this.initialize();
+  }
 
-    private initialize() {
-        const coreWindow = instantiate(this.ctx.coreWindow);
-        coreWindow.parent = this.ctx.parent;
+  private initialize() {
+    const coreWindowNode = instantiate(this.ctx.coreWindow);
+    coreWindowNode.parent = this.ctx.parent;
 
-        this.coreWindow = coreWindow.getComponent(CoreWindow)!;
-        this.coreWindow.initialize(this.ctx.lifecycle, this.ctx.scores);
-    }
+    this.coreWindow = coreWindowNode.getComponent(CoreWindow)!;
 
-    public destroy() {
-        this.coreWindow?.destroy();
-    }
+    const cwCtx: CoreWindowCtx = {
+      lifecycle: this.ctx.lifecycle,
+      scores: this.ctx.scores,
+      lives: this.ctx.lives,
+      root: this.ctx.root,
+    };
+
+    this.coreWindow.initialize(cwCtx);
+  }
+
+  public destroy() {
+    this.coreWindow?.destroy();
+  }
 }

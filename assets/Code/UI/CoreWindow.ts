@@ -1,9 +1,18 @@
-import { _decorator, Component, Label, Node, RichText } from "cc";
+import { Node } from "cc";
+import { _decorator, Component, RichText } from "cc";
 import { GameLifecycle } from "../GameLifecycle";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
-import { GameOverView } from "./GameOverView";
+import { GameOverView, GameOverViewCtx } from "./GameOverView";
+import { GameRoot } from "../GameRoot";
 
 const { ccclass, property } = _decorator;
+
+export type CoreWindowCtx = {
+  lifecycle: GameLifecycle;
+  scores: ReactiveProperty<number>;
+  lives: ReactiveProperty<number>;
+  root: Node;
+};
 
 @ccclass("CoreWindow")
 export class CoreWindow extends Component {
@@ -11,23 +20,36 @@ export class CoreWindow extends Component {
   scoreText: RichText = null;
 
   @property(RichText)
-  lives: RichText = null;
+  livesText: RichText = null;
 
   @property(GameOverView)
   gameOverView: GameOverView = null;
 
-  private lifecycle: GameLifecycle;
+  private ctx: CoreWindowCtx;
 
-  public initialize(lifecycle: GameLifecycle, scores: ReactiveProperty<number>) {
-    this.lifecycle = lifecycle;
+  public initialize(ctx: CoreWindowCtx) {
+    this.ctx = ctx;
 
-    scores.subscribe((val) => {
+    // Подписка на очки
+    this.ctx.scores.subscribe((val) => {
       if (this.scoreText) {
-        this.scoreText.string = `Score: ${val}`;
+        this.scoreText.string = `${val}`;
       }
     });
 
-    lifecycle.onGameOver.subscribe(() => {
+    // Подписка на жизни
+    this.ctx.lives.subscribe((val) => {
+      if (this.livesText) {
+        this.livesText.string = `${val}`;
+      }
+    });
+
+    if (this.gameOverView) {
+      const govCtx: GameOverViewCtx = { root: this.ctx.root };
+      this.gameOverView.initialize(govCtx);
+    }
+
+    this.ctx.lifecycle.onGameOver.subscribe(() => {
       this.showGameOver();
     });
   }
@@ -35,7 +57,7 @@ export class CoreWindow extends Component {
   private showGameOver() {
     if (this.gameOverView) {
       this.gameOverView.show(() => {
-        this.lifecycle.restartGame(3);
+        this.ctx.lifecycle.restartGame(3);
       });
     }
   }

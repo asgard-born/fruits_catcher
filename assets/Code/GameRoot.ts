@@ -1,4 +1,4 @@
-import { Node, Prefab, instantiate } from "cc";
+import { Node, Prefab } from "cc";
 import { InputControlsPm } from "./InputControls/InputControlsPm";
 import { BucketRoot } from "./Bucket/BucketRoot";
 import { Subject } from "./Utils/Subject";
@@ -104,7 +104,8 @@ export class GameRoot {
             coreWindow: this.ctx.coreWindow,
             lifecycle: this.lifecycle,
             scores: this.scores,
-            lives: this.lives
+            lives: this.lives,
+            root: this.ctx.parent
         });
     }
 
