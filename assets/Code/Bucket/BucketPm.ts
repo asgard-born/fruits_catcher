@@ -8,6 +8,9 @@ export type BucketPmCtx = {
     onMouseMove: Subject<{ x: number; y: number }>;
 };
 
+/**
+ * Bucket Presentation Model contains business logic for bucket view
+ */
 export class BucketPm {
     private bucketNode: Node;
     private dragging = false;

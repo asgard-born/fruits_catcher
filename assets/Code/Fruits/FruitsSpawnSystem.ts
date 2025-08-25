@@ -1,4 +1,4 @@
-import { Node, Vec3 } from "cc";
+import { Node, Vec3, math, Quat } from "cc";
 import { FruitsPool } from "./FruitsPool";
 import { FruitView } from "./FruitViews/FruitView";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
@@ -53,7 +53,9 @@ export class FruitsSpawnSystem {
             spawn.position.z
         ));
 
-        // добавляем в массив активных
+        const randomAngle = math.randomRange(0, 360);
+        fruitView.node.setRotation(Quat.fromEuler(new Quat(), 0, 0, randomAngle));
+
         this.ctx.fruits.push(fruitView);
     }
 

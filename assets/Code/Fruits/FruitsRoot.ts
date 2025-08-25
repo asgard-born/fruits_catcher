@@ -23,13 +23,13 @@ export class FruitsRoot {
     private fruits: FruitView[] = [];
     private pool: FruitsPool;
 
-    private readonly EACH_FRUIT_COUNT: number = 3;
+    private readonly EACH_FRUIT_POOL_COUNT: number = 3;
 
     constructor(ctx: FruitsRootCtx) {
         const poolCtx: FruitsPoolCtx = {
             prefabs: ctx.fruitsPrefabs,
             parent: ctx.parent,
-            poolSize: this.EACH_FRUIT_COUNT,
+            poolSize: this.EACH_FRUIT_POOL_COUNT,
         };
 
         this.pool = new FruitsPool(poolCtx);

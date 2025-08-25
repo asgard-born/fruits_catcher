@@ -4,10 +4,13 @@ import { BucketRoot } from "./Bucket/BucketRoot";
 import { Subject } from "./Utils/Subject";
 import { ReactiveProperty } from "./Utils/ReactiveProperty";
 import { FruitsRoot } from "./Fruits/FruitsRoot";
-import { GameLifecycleSystem } from "./GameLifecycleSystem";
+import { GameStateController } from "./GameStateController";
 import { UIRoot } from "./UI/UIRoot";
 import { FruitView } from "./Fruits/FruitViews/FruitView";
 
+/**
+ * Initial Game Context
+ */
 export type GameCtx = {
     bucketPrefab: Prefab;
     parent: Node;
@@ -25,8 +28,7 @@ export class GameRoot {
     private ctx: GameCtx;
     private inputPm: InputControlsPm;
     private bucketRoot: BucketRoot;
-    private fruitsRoot: FruitsRoot;
-    private lifecycle: GameLifecycleSystem;
+    private lifecycle: GameStateController;
     private uiRoot: UIRoot;
 
     private lives = new ReactiveProperty(0);
@@ -45,18 +47,28 @@ export class GameRoot {
     constructor(ctx: GameCtx) {
         this.ctx = ctx;
 
-        this.lives.value = ctx.initialLives;
-
-        this.initializeGameSystem();
+        this.initializeRx();
+        this.initializeGameStateController();
         this.initializeInput();
         this.initializeBucket();
-        this.initializeFruits();
-        this.initializeEvents();
+        this.initializeFruits();        
         this.initializeUI();
     }
+    
+    private initializeRx() {
+        this.lives.value = this.ctx.initialLives;
 
-    private initializeGameSystem() {
-        this.lifecycle = new GameLifecycleSystem({
+        this.onDamage.subscribe(({ value }) => {
+            this.lives.value = Math.max(0, this.lives.value - value);
+        });
+
+        this.onCollectScores.subscribe(({ value }) => {
+            this.scores.value = this.scores.value + value;
+        });
+    }
+
+    private initializeGameStateController() {
+        this.lifecycle = new GameStateController({
             lives: this.lives,
             scores: this.scores,
             isOnPause: this.isOnPause,
@@ -87,7 +99,7 @@ export class GameRoot {
     }
 
     private initializeFruits() {
-        this.fruitsRoot = new FruitsRoot({
+        new FruitsRoot({
             fruitsSpawns: this.ctx.fruitsSpawns,
             fruitsPrefabs: this.ctx.fruitsPrefabs,
             spawnFrequencySec: this.ctx.spawnFrequencySec,
@@ -97,16 +109,6 @@ export class GameRoot {
             onCollectScores: this.onCollectScores,
             isOnPause: this.isOnPause,
             speed: this.ctx.speed,
-        });
-    }
-
-    private initializeEvents() {
-        this.onDamage.subscribe(({ value }) => {
-            this.lives.value = Math.max(0, this.lives.value - value);
-        });
-
-        this.onCollectScores.subscribe(({ value }) => {
-            this.scores.value = this.scores.value + value;
         });
     }
 

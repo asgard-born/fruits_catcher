@@ -32,9 +32,10 @@ export class FruitCatchSystem {
             this.ctx.onCollectScores.next({ value: fruit.scores });
         }
 
-        const idx = this.ctx.fruits.findIndex(fv => fv.node === fruit.node);
-        if (idx !== -1) {
-            this.ctx.fruits.splice(idx, 1);
+        const index = this.ctx.fruits.findIndex(fv => fv.node === fruit.node);
+
+        if (index !== -1) {
+            this.ctx.fruits.splice(index, 1);
             this.ctx.pool.releaseFruit(fruit);
         }
     }

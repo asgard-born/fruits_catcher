@@ -1,10 +1,10 @@
-import { Node, Prefab, instantiate } from 'cc';
+import { Node, Prefab, instantiate, Quat } from 'cc';
 import { FruitView } from "./FruitViews/FruitView";
 
 export type FruitsPoolCtx = {
     prefabs: Prefab[];
     parent: Node;
-    poolSize?: number;
+    poolSize: number;
 };
 
 export class FruitsPool {
@@ -14,7 +14,7 @@ export class FruitsPool {
     constructor(ctx: FruitsPoolCtx) {
         this.ctx = ctx;
 
-        const poolSize = ctx.poolSize ?? 15;
+        const poolSize = ctx.poolSize;
 
         for (let i = 0; i < poolSize; i++) {
             const fruitNode = this.createFruit(i);
@@ -55,6 +55,7 @@ export class FruitsPool {
     }
 
     releaseFruit(fruit: FruitView) {
+        fruit.node.setRotation(Quat.fromEuler(new Quat(), 0, 0, 0));
         fruit.node.active = false;
     }
 }

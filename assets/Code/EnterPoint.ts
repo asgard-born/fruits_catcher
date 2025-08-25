@@ -39,7 +39,7 @@ export class EnterPoint extends Component {
 
     start() {
         if (!this.spawnPoint) {
-            console.warn("SpawnPoint не назначен, будет использована позиция EnterPoint");
+            console.warn("SpawnPoint is not set, using Node as fallback");
             this.spawnPoint = this.node;
         }
 

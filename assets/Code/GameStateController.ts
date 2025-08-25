@@ -1,8 +1,8 @@
-import { director } from "cc";
+import { director, profiler } from "cc";
 import { Subject } from "./Utils/Subject";
 import { ReactiveProperty } from "./Utils/ReactiveProperty";
 
-export type GameLifecycleSystemCtx = {
+export type GameStateControllerCtx = {
   lives: ReactiveProperty<number>;
   scores: ReactiveProperty<number>;
   isOnPause: ReactiveProperty<boolean>;
@@ -11,11 +11,12 @@ export type GameLifecycleSystemCtx = {
   onGameOver: Subject<void>;
 };
 
-export class GameLifecycleSystem {
-  private ctx: GameLifecycleSystemCtx;
+export class GameStateController {
+  private ctx: GameStateControllerCtx;
 
-  constructor(ctx: GameLifecycleSystemCtx) {
+  constructor(ctx: GameStateControllerCtx) {
     this.ctx = ctx;
+profiler.hideStats();
 
     this.ctx.lives.subscribe((value) => {
       if (value <= 0) {

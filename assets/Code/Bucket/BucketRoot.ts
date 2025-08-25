@@ -4,6 +4,9 @@ import { Subject } from "../Utils/Subject";
 import { BucketView } from "./BucketView";
 import { FruitView } from "../Fruits/FruitViews/FruitView";
 
+/**
+ * Bucket Context
+ */
 export type BucketRootCtx = {
     bucketPrefab: Prefab;
     parent: Node;
@@ -14,6 +17,9 @@ export type BucketRootCtx = {
     onCollectFruit: Subject<{fruit: FruitView}>;
 };
 
+/**
+ * Bucket Domain Zone
+ */
 export class BucketRoot {
     public ctx: BucketRootCtx;
     private bucketNode: Node;
