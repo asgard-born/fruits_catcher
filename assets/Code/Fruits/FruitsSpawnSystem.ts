@@ -2,7 +2,12 @@ import { Node, Vec3, math, Quat } from "cc";
 import { FruitsPool } from "./FruitsPool";
 import { FruitView } from "./FruitViews/FruitView";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
+import { FruitType } from "./FruitType";
 
+/**
+ * FruitsSpawnSystem — handles periodic fruit spawning.
+ * Uses FruitsPool to get fruits by type.
+ */
 export type FruitsSpawnSystemCtx = {
     fruitsSpawns: Node[];
     spawnFrequencySec: number;
@@ -44,7 +49,16 @@ export class FruitsSpawnSystem {
             return;
         }
 
-        const fruitView = this.ctx.pool.getFruit();
+        const availableTypes = this.ctx.pool.getAvailableTypes();
+
+        if (availableTypes.length === 0) {
+            console.warn("No available fruit types in pool!");
+            return;
+        }
+
+        const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)] as FruitType;
+
+        const fruitView = this.ctx.pool.getFruit(randomType);
         const spawn = this.getNextSpawn();
 
         fruitView.node.setPosition(new Vec3(

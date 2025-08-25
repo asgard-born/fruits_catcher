@@ -1,7 +1,6 @@
 import { Enum } from "cc";
 
 export enum FruitType {
-    None = 0,
     Banana = 1,
     BlackCherry = 2,
     BlackBerryDark = 3,
