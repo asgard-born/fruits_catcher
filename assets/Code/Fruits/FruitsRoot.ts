@@ -1,22 +1,25 @@
 import { Node, Prefab } from "cc";
 import { FruitsSpawnSystem } from "./FruitsSpawnSystem";
-import { FruitsBehaviourSystem } from "./FruitsBehaviourSystem";
+import { FruitsFallingSystem } from "./FruitsFallingSystem";
 import { FruitsPool, FruitsPoolCtx } from "./FruitsPool";
-import { FruitType } from "./FruitType";
 import { Subject } from "../Utils/Subject";
+import { FruitView } from "./FruitViews/FruitView";
+import { FruitCatchSystem } from "./FruitCatchSystem";
 
 export type FruitsRootCtx = {
     fruitsSpawns: Node[];
     fruitsPrefabs: Prefab[];
     spawnFrequencySec: number;
     parent: Node;
-    onCollectFruit: Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
+    onCollectFruit: Subject<{ fruit: FruitView }>;
+    onDamage: Subject<{ value: number }>;
+    onCollectScores: Subject<{ value: number }>;
 };
 
 export class FruitsRoot {
-    private fruits: Node[] = [];
+    private fruits: FruitView[] = [];
     private spawnSystem: FruitsSpawnSystem;
-    private behaviourSystem: FruitsBehaviourSystem;
+    private behaviourSystem: FruitsFallingSystem;
     private pool: FruitsPool;
 
     private readonly EACH_FRUIT_COUNT: number = 3;
@@ -30,24 +33,27 @@ export class FruitsRoot {
 
         this.pool = new FruitsPool(poolCtx);
 
-        this.spawnSystem = new FruitsSpawnSystem({
+        new FruitsSpawnSystem({
             spawnFrequencySec: ctx.spawnFrequencySec,
             fruitsSpawns: ctx.fruitsSpawns,
             pool: this.pool,
             fruits: this.fruits,
         });
 
-        this.behaviourSystem = new FruitsBehaviourSystem({
+        new FruitsFallingSystem({
             fruits: this.fruits,
             pool: this.pool,
             speed: 100,
             tickIntervalMs: 16,
             onCollectFruit: ctx.onCollectFruit,
         });
-    }
 
-    destroy() {
-        this.spawnSystem?.destroy();
-        this.behaviourSystem?.destroy();
+        new FruitCatchSystem({
+            fruits: this.fruits,
+            pool: this.pool,
+            onCollectFruit: ctx.onCollectFruit,
+            onDamage: ctx.onDamage,
+            onCollectScores: ctx.onCollectScores,
+        });
     }
 }

@@ -1,4 +1,5 @@
-import { Node, Prefab, instantiate } from "cc";
+import { Node, Prefab, instantiate } from 'cc';
+import { FruitView } from "./FruitViews/FruitView";
 
 export type FruitsPoolCtx = {
     prefabs: Prefab[];
@@ -16,8 +17,8 @@ export class FruitsPool {
         const poolSize = ctx.poolSize ?? 15;
 
         for (let i = 0; i < poolSize; i++) {
-            const fruit = this.createFruit(i);
-            this.pool.push(fruit);
+            const fruitNode = this.createFruit(i);
+            this.pool.push(fruitNode);
         }
     }
 
@@ -27,26 +28,33 @@ export class FruitsPool {
                 ? this.ctx.prefabs[index % this.ctx.prefabs.length]
                 : this.ctx.prefabs[Math.floor(Math.random() * this.ctx.prefabs.length)];
 
-        const fruit = instantiate(prefab);
-        fruit.setParent(this.ctx.parent);
-        fruit.active = false;
-        return fruit;
-    }
+        const node = instantiate(prefab);
+        node.setParent(this.ctx.parent);
+        node.active = false;
 
-    getFruit(): Node {
-        const fruit = this.pool.find(f => !f.active);
-        if (fruit) {
-            fruit.active = true;
-            return fruit;
+        const fruitView = node.getComponent(FruitView);
+        if (!fruitView) {
+            throw new Error("Prefab не содержит FruitView!");
         }
 
-        const newFruit = this.createFruit();
-        this.pool.push(newFruit);
-        newFruit.active = true;
-        return newFruit;
+        return node;
     }
 
-    releaseFruit(fruit: Node) {
-        fruit.active = false;
+    getFruit(): FruitView {
+        const node = this.pool.find(n => !n.active);
+
+        if (node) {
+            node.active = true;
+            return node.getComponent(FruitView)!;
+        }
+
+        const newNode = this.createFruit();
+        this.pool.push(newNode);
+        newNode.active = true;
+        return newNode.getComponent(FruitView)!;
+    }
+
+    releaseFruit(fruit: FruitView) {
+        fruit.node.active = false;
     }
 }

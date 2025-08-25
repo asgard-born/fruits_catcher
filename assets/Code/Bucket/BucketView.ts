@@ -1,12 +1,11 @@
 import { _decorator, Component, Collider2D, Contact2DType, IPhysics2DContact, Node } from 'cc';
-import { FruitView } from '../Fruits/FruitView';
-import { FruitType } from "../Fruits/FruitType";
+import { FruitView, } from '../Fruits/FruitViews/FruitView';
 import { Subject } from "../Utils/Subject";
 
 const { ccclass } = _decorator;
 
 export type BucketViewCtx = {
-    onCollectFruit: Subject<{ isDamage: boolean; fruitType: FruitType; node: Node }>;
+    onCollectFruit: Subject<{ fruit: FruitView }>;
 };
 
 @ccclass('BucketView')
@@ -30,11 +29,7 @@ export class BucketView extends Component {
         const fruit = other.node.getComponent(FruitView);
 
         if (fruit) {
-            this.ctx.onCollectFruit.next({
-                isDamage: false,
-                fruitType: fruit.fruitType,
-                node: other.node,
-            });
+            this.ctx.onCollectFruit.next({ fruit: fruit });
         }
     }
 

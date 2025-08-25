@@ -1,11 +1,12 @@
 import { Node, Vec3 } from "cc";
 import { FruitsPool } from "./FruitsPool";
+import { FruitView } from "./FruitViews/FruitView";
 
 export type FruitsSpawnSystemCtx = {
     fruitsSpawns: Node[];
     spawnFrequencySec: number;
     pool: FruitsPool;
-    fruits: Node[];
+    fruits: FruitView[];
 };
 
 export class FruitsSpawnSystem {
@@ -37,17 +38,17 @@ export class FruitsSpawnSystem {
     }
 
     spawnFruit() {
-        const fruit = this.ctx.pool.getFruit();
+        const fruitView = this.ctx.pool.getFruit();
         const spawn = this.getNextSpawn();
 
-        fruit.setPosition(new Vec3(
+        fruitView.node.setPosition(new Vec3(
             spawn.position.x,
             spawn.position.y,
             spawn.position.z
         ));
 
         // добавляем в массив активных
-        this.ctx.fruits.push(fruit);
+        this.ctx.fruits.push(fruitView);
     }
 
     destroy() {

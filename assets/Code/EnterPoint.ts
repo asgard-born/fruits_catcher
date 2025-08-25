@@ -9,6 +9,12 @@ export class EnterPoint extends Component {
     bucketPrefab: Prefab = null;
 
     @property(Node)
+    uiRoot: Node = null;
+
+    @property(Prefab)
+    coreWindow: Prefab = null;
+
+    @property(Node)
     spawnPoint: Node = null;
 
     @property(Node)
@@ -16,13 +22,13 @@ export class EnterPoint extends Component {
 
     @property(Number)
     spawnFrequencySec: number = 0.6;
-    
+
     @property(Number)
     lives: number = 3;
 
     @property([Node])
     fruitsSpawns: Node[] = [];
-    
+
     @property([Prefab])
     fruitsPrefabs: Prefab[] = [];
 
@@ -40,8 +46,10 @@ export class EnterPoint extends Component {
             spawnPoint: this.spawnPoint,
             fruitsSpawns: this.fruitsSpawns,
             fruitsPrefabs: this.fruitsPrefabs,
+            uiRoot: this.uiRoot,
             spawnFrequencySec: this.spawnFrequencySec,
-            lives: this.lives
+            lives: this.lives,
+            coreWindow: this.coreWindow
         };
 
         this.gameRoot = new GameRoot(gameCtx);
