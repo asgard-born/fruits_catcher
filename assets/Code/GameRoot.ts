@@ -5,7 +5,7 @@ import { Subject } from "./Utils/Subject";
 import { ReactiveProperty } from "./Utils/ReactiveProperty";
 import { FruitsRoot } from "./Fruits/FruitsRoot";
 import { FruitType } from "./Fruits/FruitType";
-import { GameLifecycle } from "./GameLifecycle";
+import { GameLifecycleSystem } from "./GameLifecycleSystem";
 import { UIRoot } from "./UI/UIRoot";
 import { FruitView } from "./Fruits/FruitViews/FruitView";
 
@@ -26,34 +26,40 @@ export class GameRoot {
     private inputPm: InputControlsPm;
     private bucketRoot: BucketRoot;
     private fruitsRoot: FruitsRoot;
-    private lifecycle: GameLifecycle;
+    private lifecycle: GameLifecycleSystem;
     private uiRoot: UIRoot;
 
     private lives = new ReactiveProperty(0);
     private scores = new ReactiveProperty(0);
+    private isOnPause = new ReactiveProperty(false);
 
     private onLeftMouseButtonDown = new Subject<{ x: number; y: number }>();
     private onLeftMouseButtonUp = new Subject<{ x: number; y: number }>();
     private onMouseMove = new Subject<{ x: number; y: number }>();
-    private onCollectFruit = new Subject<{fruit: FruitView}>();
+    private onCollectFruit = new Subject<{ fruit: FruitView }>();
     private onDamage = new Subject<{ value: number }>();
     private onCollectScores = new Subject<{ value: number }>();
+
 
     constructor(ctx: GameCtx) {
         this.ctx = ctx;
 
         this.lives.value = ctx.lives;
 
-        this.lifecycle = new GameLifecycle({
-            lives: this.lives,
-            scores: this.scores,
-        });
-
+        this.initializeGameSystem();
         this.initializeInput();
         this.initializeBucket();
         this.initializeFruits();
         this.initializeEvents();
         this.initializeUI();
+    }
+
+    private initializeGameSystem() {
+        this.lifecycle = new GameLifecycleSystem({
+            lives: this.lives,
+            scores: this.scores,
+            isOnPause: this.isOnPause,
+        });
     }
 
     private initializeInput() {
@@ -85,6 +91,7 @@ export class GameRoot {
             onCollectFruit: this.onCollectFruit,
             onDamage: this.onDamage,
             onCollectScores: this.onCollectScores,
+            isOnPause: this.isOnPause,
         });
     }
 

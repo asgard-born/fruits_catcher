@@ -1,6 +1,6 @@
 import { Node } from "cc";
 import { _decorator, Component, RichText } from "cc";
-import { GameLifecycle } from "../GameLifecycle";
+import { GameLifecycleSystem } from "../GameLifecycleSystem";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
 import { GameOverView, GameOverViewCtx } from "./GameOverView";
 import { GameRoot } from "../GameRoot";
@@ -8,7 +8,7 @@ import { GameRoot } from "../GameRoot";
 const { ccclass, property } = _decorator;
 
 export type CoreWindowCtx = {
-  lifecycle: GameLifecycle;
+  lifecycle: GameLifecycleSystem;
   scores: ReactiveProperty<number>;
   lives: ReactiveProperty<number>;
   root: Node;

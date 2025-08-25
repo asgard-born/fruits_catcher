@@ -1,8 +1,8 @@
 import { Node } from "cc";
 import { FruitsPool } from "./FruitsPool";
-import { FruitType } from "./FruitType";
 import { Subject } from "../Utils/Subject";
 import { FruitView } from "./FruitViews/FruitView";
+import { ReactiveProperty } from "../Utils/ReactiveProperty";
 
 export type FruitsFallingSystemCtx = {
     fruits: FruitView[];
@@ -10,6 +10,7 @@ export type FruitsFallingSystemCtx = {
     speed: number;
     tickIntervalMs: number;
     onCollectFruit: Subject<{ fruit: FruitView }>;
+    isOnPause: ReactiveProperty<boolean>;
 };
 
 export class FruitsFallingSystem {
@@ -32,6 +33,8 @@ export class FruitsFallingSystem {
     }
 
     private updateFruits(deltaTime: number) {
+        if (this.ctx.isOnPause.value) return;
+
         this.ctx.fruits.forEach(fruitView => {
             fruitView.fall(deltaTime, this.ctx.speed);
         });

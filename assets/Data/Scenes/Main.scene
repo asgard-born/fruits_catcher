@@ -1228,7 +1228,7 @@
     "parentNode": {
       "__id__": 11
     },
-    "spawnFrequencySec": 1.8,
+    "spawnFrequencySec": 1.2,
     "lives": 3,
     "fruitsSpawns": [
       {

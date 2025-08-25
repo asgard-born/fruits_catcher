@@ -3,6 +3,7 @@ import { FruitsSpawnSystem } from "./FruitsSpawnSystem";
 import { FruitsFallingSystem } from "./FruitsFallingSystem";
 import { FruitsPool, FruitsPoolCtx } from "./FruitsPool";
 import { Subject } from "../Utils/Subject";
+import { ReactiveProperty } from "../Utils/ReactiveProperty";
 import { FruitView } from "./FruitViews/FruitView";
 import { FruitCatchSystem } from "./FruitCatchSystem";
 
@@ -14,6 +15,7 @@ export type FruitsRootCtx = {
     onCollectFruit: Subject<{ fruit: FruitView }>;
     onDamage: Subject<{ value: number }>;
     onCollectScores: Subject<{ value: number }>;
+    isOnPause: ReactiveProperty<boolean>;
 };
 
 export class FruitsRoot {
@@ -38,6 +40,7 @@ export class FruitsRoot {
             fruitsSpawns: ctx.fruitsSpawns,
             pool: this.pool,
             fruits: this.fruits,
+            isOnPause: ctx.isOnPause,
         });
 
         new FruitsFallingSystem({
@@ -46,6 +49,7 @@ export class FruitsRoot {
             speed: 100,
             tickIntervalMs: 16,
             onCollectFruit: ctx.onCollectFruit,
+            isOnPause: ctx.isOnPause,
         });
 
         new FruitCatchSystem({

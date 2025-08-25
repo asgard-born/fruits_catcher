@@ -1,12 +1,14 @@
 import { Node, Vec3 } from "cc";
 import { FruitsPool } from "./FruitsPool";
 import { FruitView } from "./FruitViews/FruitView";
+import { ReactiveProperty } from "../Utils/ReactiveProperty";
 
 export type FruitsSpawnSystemCtx = {
     fruitsSpawns: Node[];
     spawnFrequencySec: number;
     pool: FruitsPool;
     fruits: FruitView[];
+    isOnPause: ReactiveProperty<boolean>;
 };
 
 export class FruitsSpawnSystem {
@@ -38,6 +40,10 @@ export class FruitsSpawnSystem {
     }
 
     spawnFruit() {
+        if (this.ctx.isOnPause.value) {
+            return;
+        }
+
         const fruitView = this.ctx.pool.getFruit();
         const spawn = this.getNextSpawn();
 

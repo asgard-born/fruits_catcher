@@ -1,12 +1,12 @@
 import { Node, Prefab, instantiate } from "cc";
 import { CoreWindow, CoreWindowCtx } from "./CoreWindow";
-import { GameLifecycle } from "../GameLifecycle";
+import { GameLifecycleSystem } from "../GameLifecycleSystem";
 import { ReactiveProperty } from "../Utils/ReactiveProperty";
 
 export type UIRootCtx = {
   parent: Node;
   coreWindow: Prefab;
-  lifecycle: GameLifecycle;
+  lifecycle: GameLifecycleSystem;
   lives: ReactiveProperty<number>;
   scores: ReactiveProperty<number>;
   root: Node;
