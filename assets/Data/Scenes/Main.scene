@@ -1118,7 +1118,7 @@
     },
     "spawnFrequencySec": 1.2,
     "fallingSpeed": 120,
-    "lives": 3,
+    "lives": 2,
     "fruitsSpawns": [
       {
         "__id__": 12
@@ -1145,7 +1145,63 @@
         "__expectedType__": "cc.Prefab"
       },
       {
+        "__uuid__": "5e9d5b82-2275-4dba-89e7-a6b72fb3ebfa",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "ae3a5ffb-5b99-4c73-8b3a-65c0e7ae4cc2",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "cca7eeb4-2709-4292-a31f-0bd665138424",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "17deccd0-3b8a-4ccd-ae3a-b66971073456",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "34ed7679-3dad-4684-8eb0-7fead229c27f",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "0e9e5bd3-8932-4b5e-94f3-f5c07b9207f8",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "0879a549-1497-4b0f-9ba5-8b7b8be73b82",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
         "__uuid__": "ad9f3852-5b1b-4e92-89c7-c32647c31932",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "a6cca5e6-935c-4be2-b9ad-1c31f149128f",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "ff9fba82-ca53-4c62-9e9b-659ae9fc7342",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "f838b824-dcba-4259-9ac4-d2bfd5c509ed",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "1d421daf-46c3-42e0-b1a0-4508dc691a52",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "5b3bfa2a-e838-408c-bcc3-9edc559f748d",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "4b13c27c-1c0e-43ca-a02e-6e2a3c185553",
+        "__expectedType__": "cc.Prefab"
+      },
+      {
+        "__uuid__": "ae720382-7f5a-4d7e-ac49-1b6a88b2a06b",
         "__expectedType__": "cc.Prefab"
       }
     ],
