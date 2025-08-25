@@ -13,6 +13,7 @@ export type UIRootCtx = {
   root: Node;
   onRestart: Subject<void>;
   onGameOver: Subject<void>;
+  counter: ReactiveProperty<number>;
 };
 
 export class UIRoot {
@@ -29,13 +30,14 @@ export class UIRoot {
     coreWindowNode.parent = this.ctx.parent;
 
     this.coreWindow = coreWindowNode.getComponent(CoreWindow)!;
-    
+
     this.coreWindow.initialize({
       scores: this.ctx.scores,
       lives: this.ctx.lives,
       root: this.ctx.root,
       onRestart: this.ctx.onRestart,
-      onGameOver: this.ctx.onGameOver
+      onGameOver: this.ctx.onGameOver,
+      counter: this.ctx.counter,
     });
   }
 

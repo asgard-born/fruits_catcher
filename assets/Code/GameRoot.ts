@@ -22,6 +22,7 @@ export type GameCtx = {
     initialLives: number;
     coreWindow: Prefab;
     speed: number;
+    initialSeconds: number
 };
 
 export class GameRoot {
@@ -33,6 +34,7 @@ export class GameRoot {
 
     private lives = new ReactiveProperty(0);
     private scores = new ReactiveProperty(0);
+    private counter = new ReactiveProperty(0);
     private isOnPause = new ReactiveProperty(false);
 
     private onLeftMouseButtonDown = new Subject<{ x: number; y: number }>();
@@ -51,12 +53,13 @@ export class GameRoot {
         this.initializeGameStateController();
         this.initializeInput();
         this.initializeBucket();
-        this.initializeFruits();        
+        this.initializeFruits();
         this.initializeUI();
     }
-    
+
     private initializeRx() {
         this.lives.value = this.ctx.initialLives;
+        this.counter.value = this.ctx.initialSeconds;
 
         this.onDamage.subscribe(({ value }) => {
             this.lives.value = Math.max(0, this.lives.value - value);
@@ -74,7 +77,9 @@ export class GameRoot {
             isOnPause: this.isOnPause,
             onRestart: this.onRestart,
             initialLives: this.ctx.initialLives,
-            onGameOver: this.onGameOver
+            onGameOver: this.onGameOver,
+            initialSeconds: this.ctx.initialSeconds,
+            counter: this.counter
         });
     }
 
@@ -121,7 +126,8 @@ export class GameRoot {
             lives: this.lives,
             root: this.ctx.parent,
             onRestart: this.onRestart,
-            onGameOver: this.onGameOver
+            onGameOver: this.onGameOver,
+            counter: this.counter
         });
     }
 

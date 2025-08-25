@@ -5,18 +5,23 @@ import { ReactiveProperty } from "./Utils/ReactiveProperty";
 export type GameStateControllerCtx = {
   lives: ReactiveProperty<number>;
   scores: ReactiveProperty<number>;
+  counter: ReactiveProperty<number>;
   isOnPause: ReactiveProperty<boolean>;
-  initialLives: number
+  initialLives: number;
+  initialSeconds: number;
   onRestart: Subject<void>;
   onGameOver: Subject<void>;
 };
 
 export class GameStateController {
   private ctx: GameStateControllerCtx;
+  private intervalId: number | null = null;
 
   constructor(ctx: GameStateControllerCtx) {
     this.ctx = ctx;
-profiler.hideStats();
+    profiler.hideStats();
+
+    this.startTimer();
 
     this.ctx.lives.subscribe((value) => {
       if (value <= 0) {
@@ -30,6 +35,31 @@ profiler.hideStats();
     });
   }
 
+  private startTimer() {
+    this.clearTimer();
+    this.ctx.counter.value = this.ctx.initialSeconds;
+
+    this.intervalId = window.setInterval(() => {
+      if (!this.ctx.isOnPause.value) {
+        this.ctx.counter.value -= 1;
+
+        if (this.ctx.counter.value <= 0) {
+          this.ctx.counter.value = 0;
+          this.pauseGame();
+          this.ctx.onGameOver.next();
+          this.clearTimer();
+        }
+      }
+    }, 1000);
+  }
+
+  private clearTimer() {
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
   private pauseGame() {
     director.pause();
     this.ctx.isOnPause.value = true;
@@ -39,6 +69,12 @@ profiler.hideStats();
     director.resume();
     this.ctx.lives.value = this.ctx.initialLives;
     this.ctx.scores.value = 0;
+    this.ctx.counter.value = this.ctx.initialSeconds;
     this.ctx.isOnPause.value = false;
+    this.startTimer();
+  }
+
+  destroy() {
+    this.clearTimer();
   }
 }

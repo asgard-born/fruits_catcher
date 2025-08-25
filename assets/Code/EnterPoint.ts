@@ -29,6 +29,9 @@ export class EnterPoint extends Component {
     @property(Number)
     lives: number = 3;
 
+    @property(Number)
+    initialSeconds: number = 30;
+
     @property([Node])
     fruitsSpawns: Node[] = [];
 
@@ -42,8 +45,8 @@ export class EnterPoint extends Component {
             console.warn("SpawnPoint is not set, using Node as fallback");
             this.spawnPoint = this.node;
         }
-
-        const gameCtx: GameCtx = {
+        
+        this.gameRoot = new GameRoot({
             bucketPrefab: this.bucketPrefab,
             parent: this.parentNode,
             spawnPoint: this.spawnPoint,
@@ -53,10 +56,9 @@ export class EnterPoint extends Component {
             spawnFrequencySec: this.spawnFrequencySec,
             initialLives: this.lives,
             coreWindow: this.coreWindow,
-            speed: this.fallingSpeed
-        };
-
-        this.gameRoot = new GameRoot(gameCtx);
+            speed: this.fallingSpeed,
+            initialSeconds: this.initialSeconds
+        });
     }
 
     onDestroy() {

@@ -12,6 +12,7 @@ export type CoreWindowCtx = {
   root: Node;
   onRestart: Subject<void>;
   onGameOver: Subject<void>;
+  counter: ReactiveProperty<number>;
 };
 
 @ccclass("CoreWindow")
@@ -21,6 +22,9 @@ export class CoreWindow extends Component {
 
   @property(RichText)
   livesText: RichText = null;
+
+  @property(RichText)
+  counterText: RichText = null;
 
   @property(GameOverView)
   gameOverView: GameOverView = null;
@@ -36,20 +40,26 @@ export class CoreWindow extends Component {
       }
     });
 
-    this.ctx.onGameOver.subscribe(() => {
-      this.showGameOver();
-    });
-
     this.ctx.lives.subscribe((val) => {
       if (this.livesText) {
         this.livesText.string = `${val}`;
       }
     });
 
+    this.ctx.counter.subscribe((val) => {
+      if (this.counterText) {
+        this.counterText.string = `${val}`;
+      }
+    });
+
+    this.ctx.onGameOver.subscribe(() => {
+      this.showGameOver();
+    });
+
     if (this.gameOverView) {
       this.gameOverView.initialize({
         root: this.ctx.root,
-        onRestart: this.ctx.onRestart
+        onRestart: this.ctx.onRestart,
       });
     }
   }
